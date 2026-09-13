@@ -1,26 +1,25 @@
 ---
-const pageTitle = "私について";
----
+import BaseLayout from '../layouts/BaseLayout.astro';
+import hero03 from '../assets/images/hero03.png';
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{pageTitle}</title>
-	</head>
-	<body>
-		<a href="/">ホーム</a>
-        <a href="/about/">概要</a>
-        <a href="/blog/">ブログ</a>
-		<h1>{pageTitle}</h1>
-  <p>ここには、私がAstroを学んでいく旅の様子を投稿します。</p>
-      <ul>
-      <li><a href="/posts/post-1/">記事1</a></li>
-      <li><a href="/posts/post-2/">記事2</a></li>
-      <li><a href="/posts/post-3/">記事3</a></li>
-    </ul>
-	</body>
-</html>
+const pageTitle = "Blog";
+---
+<BaseLayout pageTitle={pageTitle} heroImage={hero03}>
+  <section class="content">
+    <h2>Blog</h2>
+    <p>ここにブログ記事を並べます</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .content {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 3rem;
+  }
+  .content h2 {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+</style>

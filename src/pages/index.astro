@@ -1,20 +1,52 @@
 ---
-const pageTitle = "私について";
----
+import BaseLayout from '../layouts/BaseLayout.astro';
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-	    <title>{pageTitle}</title>
-	</head>
-	<body>
-		<a href="/">ホーム</a>
-        <a href="/about/">概要</a>
-		<a href="/blog/">ブログ</a>
-	    <h1>{pageTitle}</h1>
-	</body>
-</html>
+const pageTitle = "Home Page";
+
+const newsItems = [
+  { date: "2026.09.01", text: "個展のお知らせを更新しました" },
+  { date: "2026.08.10", text: "新作を追加しました" },
+];
+---
+<BaseLayout pageTitle={pageTitle}>
+  <section class="news">
+    <h2>News</h2>
+    <ul>
+      {newsItems.map((item) => (
+        <li>
+          <span class="date">{item.date}</span>
+          <span class="text">{item.text}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+.news {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 0 3rem;
+}
+  .news h2 {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .news ul {
+    list-style: none;
+    padding: 0;
+  }
+  .news li {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #444;
+    font-size: 0.85rem;
+  }
+  .news .date {
+    color: #888;
+    flex-shrink: 0;
+  }
+</style>
+

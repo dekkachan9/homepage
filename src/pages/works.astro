@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+
+const pageTitle = "Works";
+
+const images = Object.values(
+  import.meta.glob('../assets/works/*.{png,jpg,jpeg}', { eager: true })
+).map((mod) => mod.default);
+---
+<BaseLayout pageTitle={pageTitle}>
+  <section class="gallery">
+    {images.map((img) => (
+      <div class="item">
+        <Image src={img} alt="作品" loading="lazy" />
+      </div>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    padding: 2rem 3rem;
+  }
+  .item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>

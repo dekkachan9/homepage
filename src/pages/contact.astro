@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import hero01 from '../assets/images/hero01.png';
+
+const pageTitle = "Contact";
+---
+<BaseLayout pageTitle={pageTitle} heroImage={hero01}>
+  <section class="content">
+    <h2>Contact</h2>
+   <form name="contact" method="POST" data-netlify="true">
+  <input type="hidden" name="form-name" value="contact" />
+
+  <div class="field">
+    <span>Name</span>
+    <input type="text" name="name" required minlength="1" />
+  </div>
+
+  <div class="field">
+    <span>Email</span>
+    <input
+      type="email"
+      name="email"
+      required
+      pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+    />
+  </div>
+
+  <div class="field">
+    <span>Subject</span>
+    <input type="text" name="subject" required minlength="1" />
+  </div>
+
+  <div class="field">
+    <span>Message</span>
+    <textarea name="message" rows="6" required></textarea>
+  </div>
+
+  <button type="submit">Send</button>
+</form>
+  </section>
+</BaseLayout>
+
+<style>
+  .content {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 0 3rem;
+  }
+  .content h2 {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .field span {
+    font-size: 0.8rem;
+  }
+  input,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 0.6rem;
+    color: inherit;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  input:invalid:not(:placeholder-shown),
+  textarea:invalid:not(:placeholder-shown) {
+    border-color: #d97a7a;
+  }
+  button {
+    align-self: flex-start;
+    background: #b3b3b3;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 4px;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  button:hover {
+    opacity: 0.85;
+  }
+</style>
+

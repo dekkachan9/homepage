@@ -1,0 +1,30 @@
+---
+import Navigation from '../components/Navigation.astro';
+import defaultHero from '../assets/images/hero02.png';
+
+const { pageTitle, heroImage = defaultHero } = Astro.props;
+---
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <Navigation />
+    <slot />
+  </body>
+</html>
+
+<style define:vars={{ heroBg: `url(${heroImage.src})` }} is:global>
+  body {
+    background-image: var(--heroBg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: #2b2b2b;
+    color: #b3b3b3;
+    margin: 0;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  }
+</style>
