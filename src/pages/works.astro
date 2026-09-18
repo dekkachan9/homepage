@@ -1,29 +1,54 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import hero05 from '../assets/images/hero05.png';
 
 const pageTitle = "Works";
 
-const images = Object.values(
-  import.meta.glob('../assets/works/*.{png,jpg,jpeg}', { eager: true })
-).map((mod) => mod.default);
+const modules = import.meta.glob('../assets/works/*/*.{png,jpg,jpeg}', { eager: true });
+
+const allImages = Object.entries(modules).map(([path, mod]) => {
+  const match = path.match(/works\/([^/]+)\//);
+  const category = match ? match[1] : 'unknown';
+  return { category, src: mod.default.src };
+});
 ---
-<BaseLayout pageTitle={pageTitle}>
-  <section class="gallery">
-    {images.map((img) => (
-      <div class="item">
-        <Image src={img} alt="作品" loading="lazy" />
+<BaseLayout pageTitle={pageTitle} heroImage={hero05}>
+  <h2 class="section-title">Latest Works</h2>
+
+  <section class="gallery" id="gallery">
+    {allImages.map((img, index) => (
+      <div class="item" data-index={index}>
+        <img src={img.src} alt="作品" loading="lazy" />
       </div>
     ))}
   </section>
+
+  <div class="expanded" id="expanded">
+    <div class="expanded-inner">
+      <button class="close" id="expanded-close" aria-label="閉じる">×</button>
+      <button class="arrow prev" id="expanded-prev" aria-label="前へ">‹</button>
+      <img id="expanded-img" src="" alt="拡大画像" />
+      <button class="arrow next" id="expanded-next" aria-label="次へ">›</button>
+    </div>
+  </div>
 </BaseLayout>
 
 <style>
+  .section-title {
+    padding: 1.5rem 3rem 0;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
   .gallery {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1rem;
     padding: 2rem 3rem;
+  }
+  .item {
+    cursor: pointer;
   }
   .item img {
     width: 100%;
@@ -31,4 +56,119 @@ const images = Object.values(
     object-fit: cover;
     display: block;
   }
+
+  .expanded {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.6);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .expanded.open {
+    display: flex;
+    opacity: 1;
+  }
+  .expanded-inner {
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.25s ease;
+  }
+  .expanded.open .expanded-inner {
+    transform: scale(1);
+  }
+  .expanded img {
+    max-width: 80vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: block;
+  }
+  .expanded .close {
+    position: absolute;
+    top: -2.5rem;
+    right: -1rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .expanded .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    opacity: 0.7;
+  }
+  .expanded .arrow:hover {
+    opacity: 1;
+  }
+  .expanded .prev {
+    left: -3.5rem;
+  }
+  .expanded .next {
+    right: -3.5rem;
+  }
 </style>
+
+<script>
+  const items = document.querySelectorAll('.gallery .item');
+
+  const expanded = document.getElementById('expanded');
+  const expandedImg = document.getElementById('expanded-img');
+  const closeBtn = document.getElementById('expanded-close');
+  const prevBtn = document.getElementById('expanded-prev');
+  const nextBtn = document.getElementById('expanded-next');
+
+  let currentIndex = 0;
+  const sources = Array.from(items).map((item) => item.querySelector('img').getAttribute('src'));
+
+  function openExpanded(clickedImg) {
+    currentIndex = sources.indexOf(clickedImg.getAttribute('src'));
+    expandedImg.setAttribute('src', sources[currentIndex]);
+    expanded.classList.add('open');
+  }
+  function closeExpanded() {
+    expanded.classList.remove('open');
+  }
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + sources.length) % sources.length;
+    expandedImg.setAttribute('src', sources[currentIndex]);
+  }
+  function showNext() {
+    currentIndex = (currentIndex + 1) % sources.length;
+    expandedImg.setAttribute('src', sources[currentIndex]);
+  }
+
+  items.forEach((item) => {
+    const img = item.querySelector('img');
+    img.addEventListener('click', () => openExpanded(img));
+  });
+  closeBtn.addEventListener('click', closeExpanded);
+  prevBtn.addEventListener('click', showPrev);
+  nextBtn.addEventListener('click', showNext);
+
+  document.addEventListener('keydown', (e) => {
+    if (!expanded.classList.contains('open')) return;
+    if (e.key === 'Escape') closeExpanded();
+    if (e.key === 'ArrowLeft') showPrev();
+    if (e.key === 'ArrowRight') showNext();
+  });
+
+  document.querySelectorAll('.item img, #expanded-img').forEach((img) => {
+    img.addEventListener('contextmenu', (e) => e.preventDefault());
+    img.setAttribute('draggable', 'false');
+  });
+</script>

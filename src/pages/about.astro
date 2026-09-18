@@ -1,13 +1,44 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import hero00 from '../assets/images/hero00.png';
+import hero00 from '../assets/images/hero04.png';
 
 const pageTitle = "About";
 ---
 <BaseLayout pageTitle={pageTitle} heroImage={hero00}>
   <section class="content">
     <h2>About</h2>
-    <p>ここに自己紹介を書きます</p>
+
+    <div class="profile">
+      <p class="name">DAICHI ISHIZAWA</p>
+      <p class="birth">東京生まれ</p>
+
+      <p>
+        頭の欠けた人形「空間人形」をモチーフに、アッサンブラージュや写真・映像などのビジュアル作品を制作している。
+      </p>
+
+      <p>
+        ヒトは、自らの頭を通して宇宙を知覚し、世界を認識している。<br />
+        私たちが捉える世界は、知覚と認識によって形づくられ、そこには現実と虚像が重なり合っている。<br />
+        頭を持たない「空間人形」は、そうした人間の認識の外側に存在する。<br />
+        空間と時間、現実と虚像、ヒトとヒト——さまざまなものの「間」を行き来しながら、人形たちは作品の中に現れる。
+      </p>
+    </div>
+
+    <div class="profile en">
+      <p class="name">DAICHI ISHIZAWA</p>
+      <p class="birth">Born in Tokyo</p>
+
+      <p>
+        I create visual works—including assemblage, photography, and video—centered on the motif of the "Spatial Doll," a headless figure.
+      </p>
+
+      <p>
+        Human beings perceive the universe and recognize the world through their own heads.<br />
+        The world we grasp is shaped by perception and recognition, where reality and illusion overlap one another.<br />
+        The headless "Spatial Doll" exists outside the reach of such human recognition.<br />
+        Moving between space and time, reality and illusion, person and person—between the many things that lie "in between"—the dolls appear within the work.
+      </p>
+    </div>
   </section>
 </BaseLayout>
 
@@ -20,6 +51,25 @@ const pageTitle = "About";
   .content h2 {
     font-size: 1rem;
     letter-spacing: 0.1em;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .profile {
+    line-height: 1.9;
+    font-size: 0.9rem;
+  }
+  .profile .name {
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+  .profile .birth {
+  
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .profile.en {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #444;
   }
 </style>

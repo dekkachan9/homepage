@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import hero03 from '../../assets/images/hero03.png';
+import { getCollection } from 'astro:content';
+
+const pageTitle = "Blog";
+const allPosts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const selectedMonth = Astro.url.searchParams.get('month');
+
+const posts = selectedMonth
+  ? allPosts.filter((post) => post.data.date.startsWith(selectedMonth))
+  : allPosts;
+
+const archiveMap = new Map();
+for (const post of allPosts) {
+  const yearMonth = post.data.date.slice(0, 7);
+  archiveMap.set(yearMonth, (archiveMap.get(yearMonth) || 0) + 1);
+}
+const archives = Array.from(archiveMap.entries()).sort((a, b) =>
+  b[0].localeCompare(a[0])
+);
+
+function formatYearMonth(yearMonth) {
+  const [year, month] = yearMonth.split('-');
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  return `${monthNames[parseInt(month) - 1]} ${year}`;
+}
+---
+<BaseLayout pageTitle={pageTitle} heroImage={hero03}>
+  <section class="layout">
+    <div class="main">
+      <h2>Blog</h2>
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.id}`}>
+              <span class="date">{post.data.date}</span>
+              <span class="title">{post.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <aside class="sidebar">
+      <h3>Archive</h3>
+      <ul>
+        <li>
+          <a href="/blog" class={!selectedMonth ? 'active' : ''}>
+            All ({allPosts.length})
+          </a>
+        </li>
+        {archives.map(([yearMonth, count]) => (
+          <li>
+            <a href={`/blog?month=${yearMonth}`} class={selectedMonth === yearMonth ? 'active' : ''}>
+              {formatYearMonth(yearMonth)} ({count})
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: flex;
+    gap: 3rem;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 0 3rem;
+    align-items: flex-start;
+  }
+  .main {
+    flex: 1;
+    min-width: 0;
+  }
+  .main h2 {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+  .post-list li {
+    border-bottom: 1px solid #444;
+  }
+  .post-list a {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.8rem 0;
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.85rem;
+  }
+  .post-list a:hover {
+    opacity: 0.7;
+  }
+  .date {
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .sidebar {
+    width: 160px;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+  }
+  .sidebar h3 {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-bottom: 0.8rem;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sidebar a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .sidebar a:hover,
+  .sidebar a.active {
+    opacity: 1;
+    text-decoration: underline;
+  }
+
+  /* ---- スマホ用のレイアウト ---- */
+  @media (max-width: 768px) {
+    .layout {
+      flex-direction: column;
+      gap: 2rem;
+      padding: 0 1.5rem;
+      margin: 2rem auto;
+    }
+
+    .sidebar {
+      width: 100%;
+    }
+
+    .post-list a {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+  }
+</style>

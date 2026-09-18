@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import hero03 from '../../assets/images/hero03.png';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const sorted = posts.sort(
+    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
+
+  return sorted.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      prevPost: sorted[index + 1] ?? null,
+      nextPost: sorted[index - 1] ?? null,
+    },
+  }));
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content } = await render(post);
+
+const allPosts = await getCollection('blog');
+const archiveMap = new Map();
+for (const p of allPosts) {
+  const yearMonth = p.data.date.slice(0, 7);
+  archiveMap.set(yearMonth, (archiveMap.get(yearMonth) || 0) + 1);
+}
+const archives = Array.from(archiveMap.entries()).sort((a, b) =>
+  b[0].localeCompare(a[0])
+);
+
+function formatYearMonth(yearMonth) {
+  const [year, month] = yearMonth.split('-');
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  return `${monthNames[parseInt(month) - 1]} ${year}`;
+}
+---
+<BaseLayout pageTitle={post.data.title} heroImage={hero03}>
+  <section class="layout">
+    <article class="main">
+      <p class="date">{post.data.date}</p>
+      <h1>{post.data.title}</h1>
+      <Content />
+
+      <nav class="post-nav">
+        <span class="prev">
+          {prevPost && <a href={`/blog/${prevPost.id}`}>← {prevPost.data.title}</a>}
+        </span>
+        <span class="next">
+          {nextPost && <a href={`/blog/${nextPost.id}`}>{nextPost.data.title} →</a>}
+        </span>
+      </nav>
+    </article>
+
+    <aside class="sidebar">
+      <h3>Archive</h3>
+      <ul>
+        <li>
+          <a href="/blog">All ({allPosts.length})</a>
+        </li>
+        {archives.map(([yearMonth, count]) => (
+          <li>
+            <a href={`/blog?month=${yearMonth}`}>
+              {formatYearMonth(yearMonth)} ({count})
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+.layout {
+  display: flex;
+  gap: 3rem;
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 0 3rem;
+  align-items: flex-start;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.main :global(p) {
+  margin: 0 0 1.5rem;
+  line-height: 1.8;
+}
+
+.date {
+  color: #888;
+  font-size: 0.8rem;
+}
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #444;
+    font-size: 0.85rem;
+  }
+  .post-nav a {
+    color: inherit;
+    text-decoration: none;
+    max-width: 45%;
+    display: inline-block;
+  }
+  .post-nav a:hover {
+    opacity: 0.7;
+  }
+  .next {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .sidebar {
+    width: 160px;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+  }
+  .sidebar h3 {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: #888;
+    margin-bottom: 0.8rem;
+  }
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sidebar a {
+    color: inherit;
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .sidebar a:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+</style>
+
+

@@ -7,7 +7,7 @@ const { pageTitle, heroImage = defaultHero } = Astro.props;
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{pageTitle}</title>
   </head>
   <body>
@@ -26,5 +26,11 @@ const { pageTitle, heroImage = defaultHero } = Astro.props;
     color: #b3b3b3;
     margin: 0;
     font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      background-attachment: scroll;
+    }
   }
 </style>
