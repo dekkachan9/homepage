@@ -4,18 +4,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const pageTitle = "Home Page";
 
 const newsItems = [
-  { date: "2026.09.01", text: "個展のお知らせを更新しました" },
-  { date: "2026.08.10", text: "新作を追加しました" },
+  { date: "2026.09.20", text: '10/3(土)4(日)<a href="https://artcenter-new.jp/event/new_bookfair_picnic/" target="_blank" rel="noopener noreferrer">ニューBook Fair @Art Center New</a>に出展します' },
+  { date: "2026.09.19", text: '9/26(土)<a href="https://note.com/bookcultureclub/n/na022cade2895" target="_blank" rel="noopener noreferrer">ZINE FEST東京</a>に出展します' },
 ];
 ---
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} heroPosition="25% center">
   <section class="news">
     <h2>News</h2>
     <ul>
       {newsItems.map((item) => (
         <li>
           <span class="date">{item.date}</span>
-          <span class="text">{item.text}</span>
+          <span class="text" set:html={item.text}></span>
         </li>
       ))}
     </ul>
@@ -48,5 +48,8 @@ const newsItems = [
     color: #888;
     flex-shrink: 0;
   }
+  .news .text :global(a) {
+    color: inherit;
+    text-decoration: underline;
+  }
 </style>
-

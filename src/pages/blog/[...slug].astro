@@ -150,6 +150,18 @@ function formatYearMonth(yearMonth) {
     opacity: 1;
     text-decoration: underline;
   }
+
+  /* ---- スマホ用のレイアウト ---- */
+  @media (max-width: 768px) {
+    .layout {
+      flex-direction: column;
+      gap: 2rem;
+      padding: 0 1.5rem;
+      margin: 2rem auto;
+    }
+
+    .sidebar {
+      width: 100%;
+    }
+  }
 </style>
-
-
